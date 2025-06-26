@@ -2,16 +2,19 @@ import { useEffect, useState } from "react";
 
 function Calculator() {
   const [calcInput, setCalcInput] = useState("")
-  const [btnPositionIndex, setBtnPositionIndex] = useState(2)
+  const [btnPositionIndex, setBtnPositionIndex] = useState(0)
+  const [currentTheme, setCurrentTheme] = useState(0)
 
-  const positions = ["left-1", "left-[37%]", "left-[68%]"]; // Theme 1, 2, 3
+  const positions = ["left-1", "left-[37%]", "left-[68%]"]; // toggle btn position
+  const themes = ["theme-1", "theme-2", "theme-3"]
 
   function handleToggle() {
     setBtnPositionIndex((prev) => (prev + 1) % positions.length);
+    setCurrentTheme((prev) => (prev + 1) % themes.length )
   }
 
   const inputClass = `bg-[var(--bg-screen)] rounded-lg w-full text-right 
-    h-20 text-[var(--text-white)] px-4 py-6 font-bold text-4xl outline-0`
+    h-20 text-[var(--text-header)] px-4 py-6 font-bold text-4xl outline-0`
   const buttonClass = `bg-[var(--key-neutral-bg)] font-bold text-[var(--text-primary)] 
   rounded-md text-3xl shadow-[0_4px_0_var(--key-neutral-shadow)] h-14 flex 
   justify-center items-center`
@@ -21,9 +24,9 @@ function Calculator() {
     aspect-square top-1 ${positions[btnPositionIndex]} transition-all duration-300`
 
   return (
-    <main className="font_league px-6 py-8 theme-1 bg-[var(--bg-main)]" >
-      <div className="flex justify-between items-center text-[var(--text-white)]">
-        <h1 className=" text-2xl font-bold">calc</h1>
+    <main className={`font_league px-6 py-8 bg-[var(--bg-main)] ${themes[currentTheme]}`} >
+      <div className="flex justify-between items-center text-[var(--text-header)]">
+        <h1 className="text-2xl font-bold">calc</h1>
         <div className="flex gap-4 text-xs">
           <p className="uppercase self-end mb-1">Theme</p>
           <div>
@@ -77,7 +80,8 @@ function Calculator() {
           </button>
         <button 
           className={`${keyClass} 
-          col-span-2 bg-[var(--key-accent-bg)] shadow-[0_4px_0_var(--key-accent-shadow)]`}>
+          col-span-2 bg-[var(--key-accent-bg)] shadow-[0_4px_0_var(--key-accent-shadow)]
+          ${currentTheme === 2 ? "text-black" : "text-white"}`}>
             =
         </button>
       </div>

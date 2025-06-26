@@ -15,6 +15,7 @@
   
   --text-primary: hsl(221, 14%, 31%);
   --text-white: hsl(0, 0%, 100%);
+  --text-header: hsl(0, 0%, 100%);
 }
 
 .theme-2 {
@@ -47,6 +48,7 @@
   
   --text-primary: hsl(52, 100%, 62%);
   --text-white: hsl(0, 0%, 100%);
+  --text-header: hsl(52, 100%, 62%);
 }
 /* font */
 .font_league {
