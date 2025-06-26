@@ -41,6 +41,11 @@ function Calculator() {
     setCalcInput(calcInput + text)
   }
 
+  function deleteNumber() {
+    if (calcInput.trim() === "") return;
+    setCalcInput(prev => prev.slice(0, -1));
+  }
+
   const btnValues = [
     7, 8, 9, "DEL",
     4, 5, 6, "+",
@@ -89,6 +94,8 @@ function Calculator() {
             onClick={() => {
               if (!isNaN(btn)) {
                 inputInCalculator(btn)
+              } else if (btn === "DEL") {
+                deleteNumber();
               }
             }}>
               {btn}
