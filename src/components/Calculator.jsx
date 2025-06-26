@@ -46,6 +46,10 @@ function Calculator() {
     setCalcInput(prev => prev.slice(0, -1));
   }
 
+  function resetCalc() {
+    setCalcInput("")
+  }
+
   const btnValues = [
     7, 8, 9, "DEL",
     4, 5, 6, "+",
@@ -103,6 +107,7 @@ function Calculator() {
           </button>
         ))}
         <button 
+          onClick={resetCalc}
           className={`${keyClass} uppercase col-span-2 bg-[var(--key-bg)]
            shadow-[0_4px_0_var(--key-shadow)]`}>
             Reset
