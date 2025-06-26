@@ -1,9 +1,9 @@
 import './App.css'
+import Calculator from './components/Calculator'
 
 function App() {
-
   return (
-    <h1>Test me test me say that you love me</h1>
+    <Calculator />
   )
 }
 

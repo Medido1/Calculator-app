@@ -52,3 +52,7 @@
 .font_league {
   font-family: "League Spartan", sans-serif;
 }
+/* box shadow */
+.btn_shadow {
+  box-shadow: 0 4px 0 hsl(28, 16%, 65%);
+}
