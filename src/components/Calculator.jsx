@@ -14,8 +14,8 @@ function Calculator() {
   useEffect(() => {/* load last used them or preferd theme */
     const savedTheme = localStorage.getItem("theme"); 
     if (savedTheme && themes.includes(savedTheme)) {
-      const themeIndex = themes.indexOf(savedTheme)
-      setThemeIndex(themeIndex)
+      const savedIndex = themes.indexOf(savedTheme)
+      setThemeIndex(savedIndex)
     } else {
       const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
       const defaultTheme = prefersDark ? 2: 0;
@@ -36,6 +36,17 @@ function Calculator() {
     rounded-md flex justify-center items-center`
   const toggleBtnClass = `absolute rounded-[50%] bg-[var(--key-accent-bg)] w-[20%] 
     aspect-square top-1 ${positions[themeIndex]} transition-all duration-300`
+
+  function inputInCalculator(text) {
+    setCalcInput(calcInput + text)
+  }
+
+  const btnValues = [
+    7, 8, 9, "DEL",
+    4, 5, 6, "+",
+    1, 2, 3, "-",
+    ".", 0, "/", "x",
+  ];
 
   return (
     <main className={`font_league px-6 py-8 bg-[var(--bg-main)] ${themes[themeIndex]}`} >
@@ -68,25 +79,22 @@ function Calculator() {
         />
       </div>
       <div className="bg-[var(--bg-screen)] p-6 rounded-lg grid grid-cols-4 grid-rows-5 gap-4">
-        <button className={buttonClass}>7</button>
-        <button className={buttonClass}>8</button>
-        <button className={buttonClass}>9</button>
-        <button 
-          className={`${keyClass} bg-[var(--key-bg)] shadow-[0_4px_0_var(--key-shadow)]`}>
-            DEL
+        {btnValues.map((btn, i) => (
+          <button 
+            key={i}
+            className={btn === "DEL" 
+              ? `bg-[var(--key-bg)] shadow-[0_4px_0_var(--key-shadow)] ${keyClass}` 
+              :buttonClass
+            }
+            onClick={() => {
+              if (!isNaN(btn)) {
+                inputInCalculator(btn)
+              }
+            }}>
+              {btn}
+
           </button>
-        <button className={buttonClass}>4</button>
-        <button className={buttonClass}>5</button>
-        <button className={buttonClass}>6</button>
-        <button className={buttonClass}>+</button>
-        <button className={buttonClass}>1</button>
-        <button className={buttonClass}>2</button>
-        <button className={buttonClass}>3</button>
-        <button className={buttonClass}>-</button>
-        <button className={buttonClass}>.</button>
-        <button className={buttonClass}>0</button>
-        <button className={buttonClass}>/</button>
-        <button className={buttonClass}>x</button>
+        ))}
         <button 
           className={`${keyClass} uppercase col-span-2 bg-[var(--key-bg)]
            shadow-[0_4px_0_var(--key-shadow)]`}>
