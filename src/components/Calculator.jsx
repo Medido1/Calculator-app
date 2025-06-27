@@ -92,7 +92,7 @@ function Calculator() {
     } else if (operator === "/") {
       result = num2 !== 0? num1 / num2 : "Error";
     }
-    setCalcInput(result)
+    setCalcInput(result.toString())
   }
 
 
