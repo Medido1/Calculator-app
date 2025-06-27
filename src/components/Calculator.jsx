@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 
 function Calculator() {
-  const [calcInput, setCalcInput] = useState("")
+  const [calcInput, setCalcInput] = useState("");
   const [themeIndex, setThemeIndex] = useState(0);
+  const [startingNew, setStartingNew] = useState(false);
+  const [storedvalue, setStoredValue] = useState("");
+  const [operator, setOperator] = useState("");
 
   const positions = ["left-1", "left-[37%]", "left-[68%]"]; // toggle btn position
   const themes = ["theme-1", "theme-2", "theme-3"]
@@ -37,10 +40,6 @@ function Calculator() {
   const toggleBtnClass = `absolute rounded-[50%] bg-[var(--key-accent-bg)] w-[20%] 
     aspect-square top-1 ${positions[themeIndex]} transition-all duration-300`
 
-  function inputInCalculator(text) {
-    setCalcInput(calcInput + text)
-  }
-
   function deleteNumber() {
     if (calcInput.trim() === "") return;
     setCalcInput(prev => prev.slice(0, -1));
@@ -56,6 +55,46 @@ function Calculator() {
     1, 2, 3, "-",
     ".", 0, "/", "x",
   ];
+
+  function handleInput(btn) {
+    if (startingNew) {
+      setCalcInput("");
+      setStartingNew(false)
+    }
+    if (!isNaN(btn) || btn === ".") {
+      setCalcInput(prev => prev + btn)
+    }  else if (btn === "DEL") {
+      deleteNumber();
+    } else if(btn === "=") {
+        displayResults()
+    } else {
+      handleCalculation(btn)
+    }
+  }
+
+  function handleCalculation(sign) {
+    setStartingNew(true); // to start entering another operand
+    setStoredValue(calcInput) // store the first operand
+    setOperator(sign)
+  }
+
+  function displayResults() {
+    const num1 = parseFloat(storedvalue)
+    const num2 = parseFloat(calcInput)
+
+    let result;
+    if (operator === "+") {
+      result = num1 + num2
+    } else if (operator === "-") {
+      result = num1 - num2
+    } else if (operator === "x") {
+      result = num1 * num2 
+    } else if (operator === "/") {
+      result = num2 !== 0? num1 / num2 : "Error";
+    }
+    setCalcInput(result)
+  }
+
 
   return (
     <main className={`font_league px-6 py-8 bg-[var(--bg-main)] ${themes[themeIndex]}`} >
@@ -95,15 +134,8 @@ function Calculator() {
               ? `bg-[var(--key-bg)] shadow-[0_4px_0_var(--key-shadow)] ${keyClass}` 
               :buttonClass
             }
-            onClick={() => {
-              if (!isNaN(btn)) {
-                inputInCalculator(btn)
-              } else if (btn === "DEL") {
-                deleteNumber();
-              }
-            }}>
+            onClick={() =>handleInput(btn)}>
               {btn}
-
           </button>
         ))}
         <button 
@@ -113,6 +145,7 @@ function Calculator() {
             Reset
           </button>
         <button 
+          onClick={() => handleInput("=")}
           className={`${keyClass} 
           col-span-2 bg-[var(--key-accent-bg)] shadow-[0_4px_0_var(--key-accent-shadow)]
           ${themeIndex === 2 ? "text-black" : "text-white"}`}>
