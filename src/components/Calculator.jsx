@@ -65,6 +65,7 @@ function Calculator() {
       setStartingNew(false)
     }
     if (!isNaN(btn) || btn === ".") {
+      if (btn === "." && calcInput.includes(".")) return;
       setCalcInput(prev => prev + btn)
     }  else if (btn === "DEL") {
       deleteNumber();
