@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function Calculator() {
   const [calcInput, setCalcInput] = useState("");
@@ -112,7 +112,6 @@ function Calculator() {
 
   function handleKeyDown(e, value) { /* prevent from typing certain charcters in display */
     const isFirchChar = value.length === 0;
-
     if (
       ["e", "E", "+"].includes(e.key) ||
       (e.key === "-" && !isFirchChar) 
@@ -120,6 +119,22 @@ function Calculator() {
       e.preventDefault();
     }
   }
+  /* focus on the input when keyboard is used */
+  
+  const inputRef = useRef(null)
+  useEffect(() => {
+    function handleGlobalKeyDown(e) {
+      // Don't override if focused on another input or textarea
+      const active = document.activeElement;
+      const isInput = active && active.tagName === "INPUT"
+      if (!isInput) {
+        inputRef.current?.focus();
+      }
+    }
+
+    window.addEventListener("keydown", handleGlobalKeyDown)
+    return () => window.removeEventListener("keydown", handleGlobalKeyDown)
+  },[])
  
   return (
     <main className={`font_league px-6 py-8 bg-[var(--bg-main)] ${themes[themeIndex]}`} >
@@ -144,6 +159,7 @@ function Calculator() {
       <div className="my-4">
         <label htmlFor="calc" className="sr-only">Input field</label>
         <input
+          ref={inputRef}
           className={inputClass}
           type="number" 
           id="calc"
