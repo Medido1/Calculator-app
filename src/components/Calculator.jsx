@@ -108,7 +108,17 @@ function Calculator() {
     setOperator("")
   }
 
+  function handleKeyDown(e, value) { /* prevent from typing certain charcters in display */
+    const isFirchChar = value.length === 0;
 
+    if (
+      ["e", "E", "+"].includes(e.key) ||
+      (e.key === "-" && !isFirchChar) 
+    ) {
+      e.preventDefault();
+    }
+  }
+ 
   return (
     <main className={`font_league px-6 py-8 bg-[var(--bg-main)] ${themes[themeIndex]}`} >
       <div className="flex justify-between items-center text-[var(--text-header)]">
@@ -130,13 +140,14 @@ function Calculator() {
         </div>
       </div>
       <div className="my-4">
-        <label htmlFor="calc"></label>
+        <label htmlFor="calc" className="sr-only">Input field</label>
         <input
           className={inputClass}
-          type="text" 
+          type="number" 
           id="calc"
           value={calcInput}
           onChange={(e)=> setCalcInput(e.target.value)}
+          onKeyDown={(e) => handleKeyDown(e, calcInput)}
         />
       </div>
       <div className="bg-[var(--bg-screen)] p-6 rounded-lg grid grid-cols-4 grid-rows-5 gap-4">
