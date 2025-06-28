@@ -4,7 +4,7 @@ function Calculator() {
   const [calcInput, setCalcInput] = useState("");
   const [themeIndex, setThemeIndex] = useState(0);
   const [startingNew, setStartingNew] = useState(false);
-  const [storedvalue, setStoredValue] = useState("");
+  const [storedValue, setStoredValue] = useState("");
   const [operator, setOperator] = useState("");
 
   const positions = ["left-1", "left-[37%]", "left-[68%]"]; // toggle btn position
@@ -58,14 +58,15 @@ function Calculator() {
   ];
 
   function handleInput(btn) {
-    const num1 = parseFloat(storedvalue)
+    if (btn === 0 && calcInput === "0") return; /* prevent multiple leading zeros */
+    const num1 = parseFloat(storedValue)
     const num2 = parseFloat(calcInput)
     if (startingNew && btn !== "=") {
       setCalcInput("");
       setStartingNew(false)
     }
     if (!isNaN(btn) || btn === ".") {
-      if (btn === "." && calcInput.includes(".")) return;
+      if (btn === "." && calcInput.includes(".")) return; /* prevent multiple dots */
       setCalcInput(prev => prev + btn)
     }  else if (btn === "DEL") {
       deleteNumber();
@@ -99,7 +100,7 @@ function Calculator() {
   }
 
   function displayResults() {
-    const num1 = parseFloat(storedvalue)
+    const num1 = parseFloat(storedValue)
     const num2 = parseFloat(calcInput)
     const result = computeResult(num1, num2, operator)
     setCalcInput(result.toString())
