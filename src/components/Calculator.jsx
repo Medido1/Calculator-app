@@ -47,6 +47,7 @@ function Calculator() {
 
   function resetCalc() {
     setCalcInput("")
+    setStoredValue("");
   }
 
   const btnValues = [
@@ -57,7 +58,9 @@ function Calculator() {
   ];
 
   function handleInput(btn) {
-    if (startingNew) {
+    const num1 = parseFloat(storedvalue)
+    const num2 = parseFloat(calcInput)
+    if (startingNew && btn !== "=") {
       setCalcInput("");
       setStartingNew(false)
     }
@@ -68,8 +71,24 @@ function Calculator() {
     } else if(btn === "=") {
         displayResults()
     } else {
-      handleCalculation(btn)
+      if (!isNaN(num1) && !isNaN(num2)) { 
+        const result = computeResult(num1, num2, operator)
+        setCalcInput(result.toString())
+        setStoredValue(result)
+        setStartingNew(true);
+        setOperator(btn)
+      } else {
+        handleCalculation(btn)
+      }
     }
+  }
+
+  function computeResult(n1, n2, op) {
+    if (op === "+") return n1 + n2;
+    if (op === "-") return n1 - n2;
+    if (op === "x") return n1 * n2;
+    if (op === "/") return n2 !== 0 ? n1 / n2 : "error"
+    return n2;
   }
 
   function handleCalculation(sign) {
@@ -81,18 +100,10 @@ function Calculator() {
   function displayResults() {
     const num1 = parseFloat(storedvalue)
     const num2 = parseFloat(calcInput)
-
-    let result;
-    if (operator === "+") {
-      result = num1 + num2
-    } else if (operator === "-") {
-      result = num1 - num2
-    } else if (operator === "x") {
-      result = num1 * num2 
-    } else if (operator === "/") {
-      result = num2 !== 0? num1 / num2 : "Error";
-    }
+    const result = computeResult(num1, num2, operator)
     setCalcInput(result.toString())
+    setStoredValue("");
+    setOperator("")
   }
 
 
