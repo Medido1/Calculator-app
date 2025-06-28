@@ -16,6 +16,7 @@
   --text-primary: hsl(221, 14%, 31%);
   --text-white: hsl(0, 0%, 100%);
   --text-header: hsl(0, 0%, 100%);
+  --focus : hsl(0, 0, 100%);
 }
 
 .theme-2 {

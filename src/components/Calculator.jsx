@@ -30,8 +30,10 @@ function Calculator() {
     localStorage.setItem("theme", themes[themeIndex])
   }, [themeIndex])
 
+  /* clasess */
   const inputClass = `bg-[var(--bg-screen)] rounded-lg w-full text-right 
-    h-20 text-[var(--text-header)] px-4 py-6 font-bold text-4xl outline-0`
+    h-20 text-[var(--text-header)] px-4 py-6 font-bold text-4xl outline-0 
+    focus:border-[var(--focus)] focus:border-2`
   const buttonClass = `bg-[var(--key-neutral-bg)] font-bold text-[var(--text-primary)] 
   rounded-md text-3xl shadow-[0_4px_0_var(--key-neutral-shadow)] h-14 flex 
   justify-center items-center`
