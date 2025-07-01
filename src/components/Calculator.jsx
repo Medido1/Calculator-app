@@ -49,6 +49,8 @@ function Calculator({themeIndex, setThemeIndex}) {
   function resetCalc() {
     setCalcInput("")
     setStoredValue("");
+    setOperator(""); // Reset operator as well
+    setStartingNew(false); // Reset startingNew
   }
 
   const btnValues = [
@@ -59,31 +61,42 @@ function Calculator({themeIndex, setThemeIndex}) {
   ];
 
   function handleInput(btn) {
-    if (btn === 0 && calcInput === "0") return; /* prevent multiple leading zeros */
-
     const num1 = parseFloat(storedValue)
     const num2 = parseFloat(calcInput)
 
-    if (startingNew && btn !== "=") {
-      setCalcInput("");
-      setStartingNew(false)
-    }
-    if (!isNaN(btn) || btn === ".") {
-      if (btn === "." && calcInput.includes(".")) return; /* prevent multiple dots */
-      setCalcInput(prev => prev + btn)
-    }  else if (btn === "DEL") {
+    if (btn === "DEL") {
       deleteNumber();
-    } else if(btn === "=") {
-        displayResults()
-    } else {
-      if (!isNaN(num1) && !isNaN(num2)) { 
-        const result = computeResult(num1, num2, operator)
-        setCalcInput(result.toString())
-        setStoredValue(result)
-        setStartingNew(true);
-        setOperator(btn)
+      return;
+    } 
+    
+    if (btn === "=") {
+        displayResults();
+        return;
+    }
+
+    if (!isNaN(btn) || btn === ".") {
+      if (startingNew) {
+        setCalcInput(btn.toString());
+        setStartingNew(false);
       } else {
-        handleCalculation(btn)
+        if (btn === "." && calcInput.includes(".")) return; /* prevent multiple dots */
+        if (btn === 0 && calcInput === "0") return; /* prevent multiple leading zeros */
+        setCalcInput(prev => prev + btn);
+      }
+    }  
+    else { // It's an operator
+      if (!isNaN(num1) && !isNaN(num2) && operator) { // If there's a stored value, a current input, and an operator
+        const result = computeResult(num1, num2, operator);
+        setCalcInput(result.toString());
+        setStoredValue(result);
+        setStartingNew(true);
+        setOperator(btn);
+      } else if (!isNaN(num2)) { // If only a current input, store it and set operator
+        setStoredValue(calcInput);
+        setStartingNew(true);
+        setOperator(btn);
+      } else { // If nothing in input, but an operator is pressed, just set the operator
+        setOperator(btn);
       }
     }
   }
@@ -93,47 +106,56 @@ function Calculator({themeIndex, setThemeIndex}) {
     if (op === "-") return n1 - n2;
     if (op === "x") return n1 * n2;
     if (op === "/") return n2 !== 0 ? n1 / n2 : "error"
-    return n2;
-  }
-
-  function handleCalculation(sign) {
-    console.log(typeof(sign))
-    setStartingNew(true); // to start entering another operand
-    setStoredValue(calcInput) // store the first operand
-    setOperator(sign)
+    return n2; // Should not happen if an operator is provided
   }
 
   function displayResults() {
     const num1 = parseFloat(storedValue)
     const num2 = parseFloat(calcInput)
+
+    if (isNaN(num1) || isNaN(num2) || !operator) return; // Don't calculate if operands or operator are missing
+
     const result = computeResult(num1, num2, operator)
     setCalcInput(result.toString())
     setStoredValue("");
     setOperator("")
+    setStartingNew(true); // Ready for a new calculation
   }
 
-  function handleKeyDown(e, value) { /* prevent from typing certain charcters in display */
-    const isFirstChar = value.length === 0;
-    if (
-      ["e", "E", "+"].includes(e.key) ||
-      (e.key === "-" && !isFirstChar) 
-    ) {
-      e.preventDefault();
-      return 
-    } 
+  function handleKeyDown(e) { 
+    e.preventDefault(); // Prevent default browser behavior for all handled keys
+
+    const key = e.key;
+
+    if (key >= '0' && key <= '9') {
+      handleInput(parseInt(key));
+    } else if (key === '.') {
+      handleInput('.');
+    } else if (key === '+') {
+      handleInput('+');
+    } else if (key === '-') {
+      handleInput('-');
+    } else if (key === '*') { 
+      handleInput('x');
+    } else if (key === '/') {
+      handleInput('/');
+    } else if (key === 'Enter' || key === '=') {
+      handleInput('=');
+    } else if (key === 'Backspace') {
+      handleInput('DEL');
+    } else if (key === 'Escape') { // Common key for clearing
+      resetCalc();
+    }
   }
+
   /* focus on the input when keyboard is used */
-
   const inputRef = useRef(null)
   useEffect(() => {
     function handleGlobalKeyDown(e) {
-      const active = document.activeElemetextareant;
+      const active = document.activeElement;
       const isInput = active && active.tagName === "INPUT"
       if (!isInput) {
         inputRef.current?.focus();
-      }
-      if (e.key === "*") {
-        handleInput(e.key)
       }
     }
 
@@ -167,11 +189,11 @@ function Calculator({themeIndex, setThemeIndex}) {
         <input
           ref={inputRef}
           className={inputClass}
-          type="number" 
+          type="text" // Changed type to text
           id="calc"
           value={calcInput}
-          onChange={(e)=> setCalcInput(e.target.value)}
-          onKeyDown={(e) => handleKeyDown(e, calcInput)}
+          readOnly // Make it read-only as input is managed by handleKeyDown
+          onKeyDown={handleKeyDown}
         />
       </div>
       <div className="bg-[var(--bg-screen)] p-6 rounded-lg grid grid-cols-4 grid-rows-5 gap-4">
