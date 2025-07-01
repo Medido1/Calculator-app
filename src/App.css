@@ -59,3 +59,14 @@
 .btn_shadow {
   box-shadow: 0 4px 0 hsl(28, 16%, 65%);
 }
+/* remove spinner from input */
+/* Tailwind-compatible global style */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}

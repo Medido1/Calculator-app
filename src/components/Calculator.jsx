@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
-function Calculator() {
+function Calculator({themeIndex, setThemeIndex}) {
   const [calcInput, setCalcInput] = useState("");
-  const [themeIndex, setThemeIndex] = useState(0);
   const [startingNew, setStartingNew] = useState(false);
   const [storedValue, setStoredValue] = useState("");
   const [operator, setOperator] = useState("");
@@ -61,8 +60,10 @@ function Calculator() {
 
   function handleInput(btn) {
     if (btn === 0 && calcInput === "0") return; /* prevent multiple leading zeros */
+
     const num1 = parseFloat(storedValue)
     const num2 = parseFloat(calcInput)
+
     if (startingNew && btn !== "=") {
       setCalcInput("");
       setStartingNew(false)
@@ -96,6 +97,7 @@ function Calculator() {
   }
 
   function handleCalculation(sign) {
+    console.log(typeof(sign))
     setStartingNew(true); // to start entering another operand
     setStoredValue(calcInput) // store the first operand
     setOperator(sign)
@@ -111,24 +113,27 @@ function Calculator() {
   }
 
   function handleKeyDown(e, value) { /* prevent from typing certain charcters in display */
-    const isFirchChar = value.length === 0;
+    const isFirstChar = value.length === 0;
     if (
       ["e", "E", "+"].includes(e.key) ||
-      (e.key === "-" && !isFirchChar) 
+      (e.key === "-" && !isFirstChar) 
     ) {
       e.preventDefault();
-    }
+      return 
+    } 
   }
   /* focus on the input when keyboard is used */
-  
+
   const inputRef = useRef(null)
   useEffect(() => {
     function handleGlobalKeyDown(e) {
-      // Don't override if focused on another input or textarea
-      const active = document.activeElement;
+      const active = document.activeElemetextareant;
       const isInput = active && active.tagName === "INPUT"
       if (!isInput) {
         inputRef.current?.focus();
+      }
+      if (e.key === "*") {
+        handleInput(e.key)
       }
     }
 
@@ -137,7 +142,8 @@ function Calculator() {
   },[])
  
   return (
-    <main className={`font_league px-6 py-8 bg-[var(--bg-main)] ${themes[themeIndex]}`} >
+    <main className={`font_league px-6 py-8 bg-[var(--bg-main)] ${themes[themeIndex]}
+      max-w-[500px]`} >
       <div className="flex justify-between items-center text-[var(--text-header)]">
         <h1 className="text-2xl font-bold">calc</h1>
         <div className="flex gap-4 text-xs">
